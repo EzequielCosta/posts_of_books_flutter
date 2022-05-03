@@ -8,6 +8,7 @@ import 'package:http_parser/http_parser.dart' as http_parse;
 
 class AdicionarPostagemState extends State<AdicionarPostagem> {
   final _formKey = GlobalKey<FormState>();
+  bool _saving = false;
 
   String titulo = '';
   String descricao = '';
@@ -23,105 +24,139 @@ class AdicionarPostagemState extends State<AdicionarPostagem> {
           title: const Text("Adicionar Postagem"),
         ),
         body: Container(
-          color: Colors.orange,
-          child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          hintText: 'Digite o título',
-                          label: Text("Título")),
-                      validator: validateIsEmptyField,
-                      onSaved: (String? value) {
-                        titulo = value ?? '';
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          hintText: 'Digite a descrição',
-                          label: Text("Descrição")),
-                      validator: validateIsEmptyField,
-                      onSaved: (String? value) {
-                        descricao = value ?? '';
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          hintText: 'Digite o valor',
-                          label: Text("Valor")),
-                      validator: validateIsEmptyField,
-                      onSaved: (String? value) {
-                        valor = value ?? '';
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: TextButton(
-                        onPressed: () {
-                          _setGalleryFile();
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: const [
-                                Icon(
-                                  Icons.add_a_photo_outlined,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "Adicionar imagem",
-                                )
-                              ],
-                            ),
-                            if (galleryFileIsNull) ...[
-                              const Text(
-                                "Necessário adicionar uma imagem",
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 12),
-                              )
-                            ],
-                          ],
+          color: const Color.fromARGB(255, 234, 241, 245),
+          child: Center(
+            child: Form(
+                key: _formKey,
+                child: Container(
+                  margin: const EdgeInsets.only(right: 10, left: 10),
+                  height: 500,
+                  //color: Colors.orange,
+                  child: Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                            child: Icon(
+                          Icons.post_add,
+                          size: 50,
+                          color: Colors.lightBlue,
                         )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                hintText: 'Digite o título',
+                                label: Text("Título")),
+                            validator: validateIsEmptyField,
+                            onSaved: (String? value) {
+                              titulo = value ?? '';
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                hintText: 'Digite a descrição',
+                                label: Text("Descrição")),
+                            validator: validateIsEmptyField,
+                            onSaved: (String? value) {
+                              descricao = value ?? '';
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                hintText: 'Digite o valor',
+                                label: Text("Valor")),
+                            validator: validateIsEmptyField,
+                            onSaved: (String? value) {
+                              valor = value ?? '';
+                            },
+                          ),
+                        ),
+                        Container(
+                          child: TextButton(
+                              onPressed: () {
+                                _setGalleryFile();
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: const [
+                                      Icon(
+                                        Icons.add_a_photo_outlined,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "Adicionar imagem",
+                                      )
+                                    ],
+                                  ),
+                                  if (galleryFileIsNull) ...[
+                                    const Text(
+                                      "Necessário adicionar uma imagem",
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 12),
+                                    )
+                                  ],
+                                ],
+                              )),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.lightBlue,
+                          ),
+                          width: 100,
+                          margin: const EdgeInsets.only(top: 10),
+                          child: TextButton(
+                              onPressed: () {
+                                _save();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.save,
+                                    color: Colors.white,
+                                  ),
+                                  const Text(
+                                    "Salvar",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  if (_saving) ...[
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const SizedBox(
+                                        width: 10,
+                                        height: 10,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ))
+                                  ]
+                                ],
+                              )),
+                        ),
+                      ],
+                    ),
                   ),
-                  Container(
-                    width: 100,
-                    margin: const EdgeInsets.only(top: 10),
-                    child: TextButton(
-                        onPressed: () {
-                          _save();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.save),
-                            Text(
-                              "Salvar",
-                            )
-                          ],
-                        )),
-                  ),
-                ],
-              )),
+                )),
+          ),
         ));
   }
 
@@ -176,8 +211,14 @@ class AdicionarPostagemState extends State<AdicionarPostagem> {
     });
 
     request.files.add(pic);
-
+    setState(() {
+      _saving = true;
+    });
     http.StreamedResponse response = await request.send();
+    setState(() {
+      _saving = false;
+    });
+
     return response;
   }
 

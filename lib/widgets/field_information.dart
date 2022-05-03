@@ -14,7 +14,7 @@ class FieldInformation extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: icon,
-        title: Text("$label:   ",
+        title: Text(label,
             style: const TextStyle(
                 fontWeight: FontWeight.bold, color: Colors.black54)),
         subtitle: Text(

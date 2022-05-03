@@ -32,7 +32,7 @@ class HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 244, 247),
       appBar: AppBar(
-        title: const Text("List Post"),
+        title: const Text("Postagens"),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_circle_outline),

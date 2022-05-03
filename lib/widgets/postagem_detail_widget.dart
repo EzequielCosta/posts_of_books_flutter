@@ -20,7 +20,7 @@ class PostagemDetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Detail")),
+      appBar: AppBar(title: const Text("Detalhe")),
       body: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Container(
           margin: const EdgeInsets.only(bottom: 10),
